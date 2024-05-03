@@ -1,30 +1,14 @@
 require 'os'
 require 'launchy'
-
-projects = {
-  "admin-panel-server" => {
-    path: "/Users/borgarstensrud/Desktop/Git/com-future-tech-admin-panel-cms/server",
-    compas_uri:"mongodb://localhost:27017/natours",
-    tabs: [
-      "http://localhost:3000",
-      "https://google.com/search?q=project1",
-      "https://github.com/user/project1"
-    ]
-  },
-  "admin-panel-frontend" => {
-    path: "/Users/borgarstensrud/Desktop/Git/com-future-tech-admin-panel-cms/admin-panel-by-future-tech",
-    compas_uri:"mongodb://localhost:27017/natours",
-    tabs: [
-      "http://localhost:4000",
-      "https://google.com/search?q=project2",
-      "https://github.com/user/project2"
-    ]
-  }
-}
+require 'json'
 
 
-
-
+# Reads the project configuration from a JSON file
+def read_projects(file_path)
+    file = File.read(file_path)
+    JSON.parse(file, symbolize_names: true)
+  end
+  
 def open_vs_code(project_path)
     # Check if the VS Code command-line tool is available
     if system("which code > /dev/null 2>&1")
@@ -38,12 +22,13 @@ def open_vs_code(project_path)
   end
   
   
-def open_mongodb_gui
+def open_mongodb_gui(project_uri)
   # Starter MongoDB GUI avhengig av operativsystemet
   if OS.mac?
-    system("open -a 'MongoDB Compass'")
+    system("open -a 'MongoDB Compass' --args #{project_uri}")
   elsif OS.windows?
-    system("start MongoDBCompass")
+    system("start MongoDBCompass #{project_uri}")
+
   else
     puts "MongoDB GUI not supported on this OS"
   end
@@ -74,11 +59,19 @@ def open_chrome_with_tabs(project_tabs)
 end
 
 
-projects.each do |name, config|
-    puts "Opening environment for #{name}"
-    open_vs_code(config[:path])
-    open_mongodb_gui
-    open_terminal(config[:path])
-    open_chrome_with_tabs(config[:tabs])
+# Main execution starts here
+begin
+    projects = JSON.parse(ARGV[0], symbolize_names: true)
+    puts projects.inspect  # Add this line to see the structure of 'projects'
+    projects.each do |name, config|
+      puts "Opening environment for #{name}"
+      open_vs_code(config[:vscodePath])
+      open_mongodb_gui(config[:mongodbUri])
+      open_terminal(config[:terminalPath])
+      open_chrome_with_tabs(config[:chromeTabs])
+    end
+  rescue JSON::ParserError => e
+    puts "Error parsing JSON: #{e}"
   end
+  
   

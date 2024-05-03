@@ -1,0 +1,20 @@
+{
+  "admin-panel-server": {
+    " path": "/Users/borgarstensrud/Desktop/Git/com-future-tech-admin-panel-cms/server",
+    "compas_uri": "mongodb://localhost:27017/natours",
+    "tabs": [
+      "mongodb://localhost:27017/natours",
+      "https://google.com/search?q=project1",
+      "https://github.com/user/project1"
+    ]
+  },
+  "admin-panel-frontend": {
+    "path": "/Users/borgarstensrud/Desktop/Git/com-future-tech-admin-panel-cms/admin-panel-by-future-tech",
+    "compas_uri": "mongodb://localhost:27017/natours",
+    "tabs": [
+      "http://localhost:4000",
+      "https://google.com/search?q=project2",
+      "https://github.com/user/project2"
+    ]
+  }
+}
